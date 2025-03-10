@@ -31,7 +31,7 @@ Follow these steps to set up and run the application:
 ### 4. Using the Application
 
 - Navigate to `http://localhost:8080/`
-- Register as a **Passenger**
+- Register as a **Passenger**.
 - Log in using your registered credentials
 
 #### Admin Login Credentials
@@ -39,5 +39,3 @@ Follow these steps to set up and run the application:
 - **Password:** `adminpass1`
 
 ---
-
-Enjoy using the Passenger Management System! 🚀
