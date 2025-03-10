@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <!-- Bootstrap & Custom Styles -->
+    <link rel="stylesheet" href="/static/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        .table th, .table td {
+            text-align: center;
+        }
+        .table {
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .table th {
+            background-color: #007bff;
+            color: white;
+        }
+        .table td {
+            background-color: #f9f9f9;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 🚆 Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">🚆 Railway Reservation</a>
+            <a href="/admin/login" class="btn btn-danger">Logout</a>
+        </div>
+    </nav>
+
+    <!-- 🌟 Main Content Wrapper -->
+    <div class="main-content container mt-5">
+        <h2 class="text-center fw-bold">Admin Dashboard</h2>
+        <p class="text-center text-muted">Manage trains and users from here.</p>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Add Train</h3>
+                <form action="/admin/addTrain" method="post">
+                    <div class="form-group">
+                        <label>Train Number:</label>
+                        <input type="number" name="trainNumber" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Train Name:</label>
+                        <input type="text" name="trainName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Source:</label>
+                        <input type="text" name="source" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Destination:</label>
+                        <input type="text" name="destination" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block mt-3">Add Train</button>
+                </form>
+            </div>
+
+            <div class="col-md-6">
+                <h3>Available Trains</h3>
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Train Number</th>
+                            <th>Train Name</th>
+                            <th>Source</th>
+                            <th>Destination</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamically populate this list using JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📌 Footer -->
+    <footer class="footer">
+        &copy; 2025 Railway Reservation System | All Rights Reserved
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const response = await fetch('/trains'); // Adjust this path to fetch train list from your API
+            const trains = await response.json();
+            
+            let resultHTML = '';
+            trains.forEach(train => {
+                resultHTML += `
+                <tr>
+                    <td>${train.trainNumber}</td>
+                    <td>${train.trainName}</td>
+                    <td>${train.source}</td>
+                    <td>${train.destination}</td>
+                </tr>
+                `;
+            });
+            document.querySelector('tbody').innerHTML = resultHTML;
+        });
+    </script>
+</body>
+</html>
