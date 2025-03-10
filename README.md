@@ -23,18 +23,32 @@ Follow these steps to set up and run the application:
    - Import the project as a **Maven** project
 
 3. **Run Maven Commands** (Before Running the Application)
-   - Open a terminal inside the project directory and execute the following commands:
-     ```sh
-     mvn clean
-     mvn install
-     ```
-   - In your IDE, right-click on the project and select **Maven > Update Project** to ensure dependencies are correctly resolved.
+   - **From Terminal:**
+     - Open a terminal inside the project directory and execute the following commands:
+       ```sh
+       mvn clean
+       mvn install
+       ```
+   - **From IDE (Spring Tool Suite - STS):**
+     - Right-click on the project in the **Project Explorer**.
+     - Navigate to **Run As > Maven clean** to clean the project.
+     - Navigate to **Run As > Maven install** to install dependencies.
+     - Right-click on the project and select **Maven > Update Project** to ensure dependencies are correctly resolved.
 
 ### 3. Run the Application
 
-- Locate the **main class** of the Spring Boot application
-- Run it as a **Spring Boot Application**
-- The application will start on `http://localhost:8080/`
+#### From Terminal
+- Navigate to the project root folder in your terminal.
+- Run the following command:
+  ```sh
+  mvn spring-boot:run
+  ```
+
+#### From IDE (Spring Tool Suite - STS)
+- Open the **Spring Boot Perspective** in STS.
+- Locate the **main class** of the Spring Boot application.
+- Right-click and select **Run As > Spring Boot App**.
+- The application will start on `http://localhost:8080/`.
 
 ### 4. Using the Application
 
