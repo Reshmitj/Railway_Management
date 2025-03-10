@@ -14,7 +14,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())  // ✅ Disable CSRF for form submissions
+            .csrf(csrf -> csrf.disable())  
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/static/index.html", "/error").permitAll()
@@ -23,9 +23,9 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated()
             )
-            .headers(headers -> headers.frameOptions(frame -> frame.disable())) // ✅ Fix for H2 Console
+            .headers(headers -> headers.frameOptions(frame -> frame.disable())) 
             .logout(logout -> logout
-                .logoutUrl("/admin/logout")  // ✅ Proper logout handling
+                .logoutUrl("/admin/logout")  
                 .logoutSuccessUrl("/index.html")
                 .permitAll()
             );

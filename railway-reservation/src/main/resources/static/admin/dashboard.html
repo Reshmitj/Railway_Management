@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-
-    <!-- Bootstrap & Custom Styles -->
     <link rel="stylesheet" href="/static/bootstrap.min.css">
     <link rel="stylesheet" href="/static/styles.css">
     <style>
@@ -26,25 +24,25 @@
         .table-hover tbody tr:hover {
             background-color: #f1f1f1;
         }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 
 <body>
-    <!-- 🚆 Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="/">🚆 Railway Reservation</a>
+            <a class="navbar-brand fw-bold" href="/">Railway Reservation</a>
             <a href="/admin/login" class="btn btn-danger">Logout</a>
         </div>
     </nav>
 
-    <!-- 🌟 Main Content Wrapper -->
-    <div class="main-content container mt-5">
+    <div class="container mt-5">
         <h2 class="text-center fw-bold">Admin Dashboard</h2>
-        <p class="text-center text-muted">Manage trains and users from here.</p>
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 mx-auto">
                 <h3>Add Train</h3>
                 <form action="/admin/addTrain" method="post">
                     <div class="form-group">
@@ -63,51 +61,79 @@
                         <label>Destination:</label>
                         <input type="text" name="destination" class="form-control" required>
                     </div>
+                    <div class="form-group">
+                        <label>Seats Available:</label>
+                        <input type="number" name="seatsAvailable" class="form-control" required>
+                    </div>
                     <button type="submit" class="btn btn-success btn-block mt-3">Add Train</button>
                 </form>
             </div>
+        </div>
 
-            <div class="col-md-6">
-                <h3>Available Trains</h3>
-                <table class="table table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>Train Number</th>
-                            <th>Train Name</th>
-                            <th>Source</th>
-                            <th>Destination</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Dynamically populate this list using JavaScript -->
-                    </tbody>
-                </table>
-            </div>
+        <div class="text-center mt-4">
+            <button id="showTrainsBtn" class="btn btn-primary">Show All Trains</button>
+            <button id="hideTrainsBtn" class="btn btn-secondary hidden">Hide Trains</button>
+        </div>
+
+        <div id="trainList" class="hidden mt-4">
+            <h3 class="text-center">Available Trains</h3>
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Train Number</th>
+                        <th>Train Name</th>
+                        <th>Source</th>
+                        <th>Destination</th>
+                        <th>Seats Available</th>
+                    </tr>
+                </thead>
+                <tbody id="trainTableBody">
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- 📌 Footer -->
-    <footer class="footer">
+    <footer class="footer mt-4">
         &copy; 2025 Railway Reservation System | All Rights Reserved
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async function () {
-            const response = await fetch('/trains'); // Adjust this path to fetch train list from your API
-            const trains = await response.json();
-            
-            let resultHTML = '';
-            trains.forEach(train => {
-                resultHTML += `
-                <tr>
-                    <td>${train.trainNumber}</td>
-                    <td>${train.trainName}</td>
-                    <td>${train.source}</td>
-                    <td>${train.destination}</td>
-                </tr>
-                `;
+        document.addEventListener('DOMContentLoaded', function () {
+            const showTrainsBtn = document.getElementById('showTrainsBtn');
+            const hideTrainsBtn = document.getElementById('hideTrainsBtn');
+            const trainListDiv = document.getElementById('trainList');
+            const trainTableBody = document.getElementById('trainTableBody');
+
+            async function fetchTrains() {
+                const response = await fetch('/trains');
+                const trains = await response.json();
+                
+                let resultHTML = '';
+                trains.forEach(train => {
+                    resultHTML += `
+                        <tr>
+                            <td>${train.trainNumber}</td>
+                            <td>${train.trainName}</td>
+                            <td>${train.source}</td>
+                            <td>${train.destination}</td>
+                            <td>${train.seatsAvailable}</td>
+                        </tr>`;
+                });
+                trainTableBody.innerHTML = resultHTML;
+            }
+
+            showTrainsBtn.addEventListener('click', function () {
+                fetchTrains();
+                trainListDiv.classList.remove('hidden');
+                showTrainsBtn.classList.add('hidden');
+                hideTrainsBtn.classList.remove('hidden');
             });
-            document.querySelector('tbody').innerHTML = resultHTML;
+
+            hideTrainsBtn.addEventListener('click', function () {
+                trainListDiv.classList.add('hidden');
+                showTrainsBtn.classList.remove('hidden');
+                hideTrainsBtn.classList.add('hidden');
+            });
         });
     </script>
 </body>

@@ -49,7 +49,6 @@ public class PassengerController {
         return "redirect:/passenger/login.html"; 
     }
     
-    // ✅ LOGOUT IMPLEMENTATION
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate(); 
