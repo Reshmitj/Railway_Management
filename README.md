@@ -20,7 +20,15 @@ Follow these steps to set up and run the application:
 
 2. **Open in an IDE**
    - Open Spring Tool Suite (STS) or any preferred Java IDE
-   - Import the project as a **Maven** or **Gradle** project
+   - Import the project as a **Maven** project
+
+3. **Run Maven Commands** (Before Running the Application)
+   - Open a terminal inside the project directory and execute the following commands:
+     ```sh
+     mvn clean
+     mvn install
+     ```
+   - In your IDE, right-click on the project and select **Maven > Update Project** to ensure dependencies are correctly resolved.
 
 ### 3. Run the Application
 
@@ -31,7 +39,7 @@ Follow these steps to set up and run the application:
 ### 4. Using the Application
 
 - Navigate to `http://localhost:8080/`
-- Register as a **Passenger**.
+- Register as a **Passenger**
 - Log in using your registered credentials
 
 #### Admin Login Credentials
