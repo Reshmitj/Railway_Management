@@ -6,6 +6,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -17,12 +19,12 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())  
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/static/index.html", "/error").permitAll()
-                .requestMatchers("/static/**").permitAll()
-                .requestMatchers("/passenger/**", "/admin/**", "/trains/**").permitAll()
-                .requestMatchers("/h2-console/**").permitAll()
-                .anyRequest().authenticated()
-            )
+            	    .requestMatchers("/", "/static/index.html", "/error").permitAll()
+            	    .requestMatchers("/static/**").permitAll()
+            	    .requestMatchers("/passenger/**", "/admin/**", "/trains/**", "/reservations/**","/routes/**").permitAll()
+            	    .requestMatchers("/h2-console/**").permitAll()
+            	    .anyRequest().authenticated()
+            	)
             .headers(headers -> headers.frameOptions(frame -> frame.disable())) 
             .logout(logout -> logout
                 .logoutUrl("/admin/logout")  
@@ -31,5 +33,18 @@ public class SecurityConfig {
             );
 
         return http.build();
+    }
+    
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedMethods("*")
+                        .allowedOrigins("http://localhost:8080")
+                        .allowCredentials(true);
+            }
+        };
     }
 }

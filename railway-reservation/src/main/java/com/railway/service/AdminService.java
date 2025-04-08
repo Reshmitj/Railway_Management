@@ -11,14 +11,14 @@ import com.railway.repository.AdminRepository;
 @Service
 public class AdminService {
 
-    @Autowired
-    private AdminRepository adminRepository;
+	@Autowired
+	private AdminRepository adminRepository;
 
-    public void saveAdmin(Admin admin) {
-        adminRepository.save(admin);
-    }
+	public void saveAdmin(Admin admin) {
+		adminRepository.save(admin);
+	}
 
-    public Optional<Admin> login(String username, String password) {
-        return adminRepository.findByUsernameAndPassword(username, password);
-    }
+	public Optional<Admin> login(String username, String password) {
+		return adminRepository.findByUsernameAndPassword(username, password);
+	}
 }

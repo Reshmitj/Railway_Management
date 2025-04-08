@@ -1,140 +1,270 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="/static/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/styles.css">
-    <style>
-        .table th, .table td {
-            text-align: center;
-        }
-        .table {
-            border-radius: 10px;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        .table th {
-            background-color: #007bff;
-            color: white;
-        }
-        .table td {
-            background-color: #f9f9f9;
-        }
-        .table-hover tbody tr:hover {
-            background-color: #f1f1f1;
-        }
-        .hidden {
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/static/bootstrap.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #f8f9fa;
+    }
+    .content-wrapper { flex: 1; display: flex; }
+    .sidebar {
+      width: 220px;
+      background-color: #0d6efd;
+      padding: 20px;
+      color: white;
+    }
+    .sidebar h4 {
+      font-weight: bold;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .sidebar button {
+      margin-bottom: 12px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      background-color: #f8f9fa;
+    }
+    .card {
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      background-color: white;
+      padding: 20px;
+    }
+    .footer {
+      padding: 15px;
+      background-color: #f1f1f1;
+      text-align: center;
+      font-size: 14px;
+      color: #6c757d;
+      border-top: 1px solid #dee2e6;
+    }
+    .hidden { display: none; }
+    .table thead { background-color: #007bff; color: white; }
+    .table td, .table th { text-align: center; vertical-align: middle; }
+    .table tbody tr:hover { background-color: #f1f1f1; }
+  </style>
 </head>
-
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="/">Railway Reservation</a>
-            <a href="/admin/login" class="btn btn-danger">Logout</a>
-        </div>
-    </nav>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="/">🚆 Railway Reservation</a>
+      <a href="/admin/logout" class="btn btn-danger">Logout</a>
+    </div>
+  </nav>
 
-    <div class="container mt-5">
-        <h2 class="text-center fw-bold">Admin Dashboard</h2>
-
-        <div class="row">
-            <div class="col-md-6 mx-auto">
-                <h3>Add Train</h3>
-                <form action="/admin/addTrain" method="post">
-                    <div class="form-group">
-                        <label>Train Number:</label>
-                        <input type="number" name="trainNumber" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Train Name:</label>
-                        <input type="text" name="trainName" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Source:</label>
-                        <input type="text" name="source" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Destination:</label>
-                        <input type="text" name="destination" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Seats Available:</label>
-                        <input type="number" name="seatsAvailable" class="form-control" required>
-                    </div>
-                    <button type="submit" class="btn btn-success btn-block mt-3">Add Train</button>
-                </form>
-            </div>
-        </div>
-
-        <div class="text-center mt-4">
-            <button id="showTrainsBtn" class="btn btn-primary">Show All Trains</button>
-            <button id="hideTrainsBtn" class="btn btn-secondary hidden">Hide Trains</button>
-        </div>
-
-        <div id="trainList" class="hidden mt-4">
-            <h3 class="text-center">Available Trains</h3>
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>Train Number</th>
-                        <th>Train Name</th>
-                        <th>Source</th>
-                        <th>Destination</th>
-                        <th>Seats Available</th>
-                    </tr>
-                </thead>
-                <tbody id="trainTableBody">
-                </tbody>
-            </table>
-        </div>
+  <div class="content-wrapper">
+    <div class="sidebar">
+      <h4>Menu</h4>
+      <button class="btn btn-light w-100" onclick="showSection('addTrain')">➕ Add Train</button>
+      <button class="btn btn-light w-100" onclick="showSection('addRoute')">🧭 Add Route</button>
+      <button class="btn btn-light w-100" onclick="showSection('viewTrains')">📋 View Trains</button>
     </div>
 
-    <footer class="footer mt-4">
-        &copy; 2025 Railway Reservation System | All Rights Reserved
-    </footer>
+    <div class="main-content">
+      <!-- Add Train -->
+      <div id="addTrain-section" class="card">
+        <h3 class="mb-3">Add New Train</h3>
+        <form action="/admin/addTrain" method="post">
+          <div class="form-group mb-2">
+            <label>Train Number:</label>
+            <input type="number" name="trainNumber" class="form-control" required />
+          </div>
+          <div class="form-group mb-2">
+            <label>Train Name:</label>
+            <input type="text" name="trainName" class="form-control" required />
+          </div>
+          <div class="form-group mb-2">
+            <label>Source:</label>
+            <input type="text" name="source" class="form-control" required />
+          </div>
+          <div class="form-group mb-2">
+            <label>Destination:</label>
+            <input type="text" name="destination" class="form-control" required />
+          </div>
+          <div class="form-group mb-3">
+            <label>Seats Available:</label>
+            <input type="number" name="seatsAvailable" class="form-control" required />
+          </div>
+          <button type="submit" class="btn btn-success">Add Train</button>
+        </form>
+      </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const showTrainsBtn = document.getElementById('showTrainsBtn');
-            const hideTrainsBtn = document.getElementById('hideTrainsBtn');
-            const trainListDiv = document.getElementById('trainList');
-            const trainTableBody = document.getElementById('trainTableBody');
+      <!-- Add Route -->
+      <div id="addRoute-section" class="card hidden">
+        <h3 class="mb-3">Add New Route</h3>
 
-            async function fetchTrains() {
-                const response = await fetch('/trains');
-                const trains = await response.json();
-                
-                let resultHTML = '';
-                trains.forEach(train => {
-                    resultHTML += `
-                        <tr>
-                            <td>${train.trainNumber}</td>
-                            <td>${train.trainName}</td>
-                            <td>${train.source}</td>
-                            <td>${train.destination}</td>
-                            <td>${train.seatsAvailable}</td>
-                        </tr>`;
-                });
-                trainTableBody.innerHTML = resultHTML;
-            }
+        <div id="routeMessage" class="alert alert-info d-none"></div>
 
-            showTrainsBtn.addEventListener('click', function () {
-                fetchTrains();
-                trainListDiv.classList.remove('hidden');
-                showTrainsBtn.classList.add('hidden');
-                hideTrainsBtn.classList.remove('hidden');
-            });
+        <form action="/admin/addRoute" method="post" onsubmit="return showRouteSuccess();">
+          <div class="form-group mb-2">
+            <label>Train Number:</label>
+            <input type="number" name="trainNumber" class="form-control" required />
+          </div>
+          <div class="form-group mb-2">
+            <label>Source:</label>
+            <input type="text" name="source" class="form-control" required />
+          </div>
+          <div class="form-group mb-2">
+            <label>Destination:</label>
+            <input type="text" name="destination" class="form-control" required />
+          </div>
+          <div class="form-group mb-3">
+            <label>Stops (Comma separated):</label>
+            <input type="text" name="stops" class="form-control" placeholder="e.g. Stop1, Stop2" />
+          </div>
+          <button type="submit" class="btn btn-success">Add Route</button>
+        </form>
+      </div>
 
-            hideTrainsBtn.addEventListener('click', function () {
-                trainListDiv.classList.add('hidden');
-                showTrainsBtn.classList.remove('hidden');
-                hideTrainsBtn.classList.add('hidden');
-            });
-        });
-    </script>
+      <!-- View Trains -->
+      <div id="viewTrains-section" class="card hidden">
+        <h3 class="mb-3">All Trains</h3>
+        <table class="table table-striped table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Train No.</th>
+              <th>Name</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Seats</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="trainTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="editTrainForm">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Train</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="editId" />
+            <div class="form-group mb-2"><label>Name:</label><input type="text" id="editName" class="form-control" required /></div>
+            <div class="form-group mb-2"><label>Source:</label><input type="text" id="editSource" class="form-control" required /></div>
+            <div class="form-group mb-2"><label>Destination:</label><input type="text" id="editDestination" class="form-control" required /></div>
+            <div class="form-group mb-2"><label>Seats:</label><input type="number" id="editSeats" class="form-control" required /></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer mt-auto">&copy; 2025 Railway Reservation System | All Rights Reserved</footer>
+
+  <!-- Scripts -->
+  <script>
+    function showSection(section) {
+      document.getElementById("addTrain-section").classList.add("hidden");
+      document.getElementById("viewTrains-section").classList.add("hidden");
+      document.getElementById("addRoute-section").classList.add("hidden");
+
+      if (section === "addTrain") {
+        document.getElementById("addTrain-section").classList.remove("hidden");
+      } else if (section === "addRoute") {
+        document.getElementById("addRoute-section").classList.remove("hidden");
+      } else {
+        document.getElementById("viewTrains-section").classList.remove("hidden");
+        fetchTrains();
+      }
+    }
+
+    async function fetchTrains() {
+      const response = await fetch('/trains');
+      const trains = await response.json();
+      const tbody = document.getElementById("trainTableBody");
+
+      tbody.innerHTML = trains.map(train => `
+        <tr>
+          <td>${train.trainNumber}</td>
+          <td>${train.trainName}</td>
+          <td>${train.source}</td>
+          <td>${train.destination}</td>
+          <td>${train.seatsAvailable}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary" onclick='openEdit(${JSON.stringify(train)})'>✏️ Edit</button>
+            <button class="btn btn-sm btn-outline-danger ms-2" onclick='deleteTrain(${train.id})'>🗑️ Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function openEdit(train) {
+      document.getElementById("editId").value = train.id;
+      document.getElementById("editName").value = train.trainName;
+      document.getElementById("editSource").value = train.source;
+      document.getElementById("editDestination").value = train.destination;
+      document.getElementById("editSeats").value = train.seatsAvailable;
+      new bootstrap.Modal(document.getElementById("editModal")).show();
+    }
+
+    document.getElementById("editTrainForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const updated = {
+        id: document.getElementById("editId").value,
+        trainName: document.getElementById("editName").value,
+        source: document.getElementById("editSource").value,
+        destination: document.getElementById("editDestination").value,
+        seatsAvailable: document.getElementById("editSeats").value
+      };
+
+      await fetch("/admin/updateTrain", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated)
+      });
+
+      bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
+      fetchTrains();
+    });
+
+    async function deleteTrain(id) {
+      if (confirm("Are you sure you want to delete this train?")) {
+        const response = await fetch(`/admin/deleteTrain/${id}`, { method: "DELETE" });
+        if (response.ok) fetchTrains();
+        else alert("Failed to delete train.");
+      }
+    }
+
+    // 👇 Route message logic
+    function showRouteSuccess() {
+      const number = document.querySelector('[name="trainNumber"]').value;
+      sessionStorage.setItem("routeMessage", `✅ Route added for train number ${number}`);
+      return true;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const message = sessionStorage.getItem("routeMessage");
+      if (message) {
+        const div = document.getElementById("routeMessage");
+        div.innerText = message;
+        div.classList.remove("d-none");
+        sessionStorage.removeItem("routeMessage");
+      }
+    });
+  </script>
 </body>
 </html>

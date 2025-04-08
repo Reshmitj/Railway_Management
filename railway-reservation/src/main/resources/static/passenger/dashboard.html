@@ -1,72 +1,242 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Passenger Dashboard</title>
-	<!-- ✅ Fix Bootstrap and CSS Links -->
-	  <link rel="stylesheet" href="/static/bootstrap.min.css">
-	  <link rel="stylesheet" href="/static/styles.css">
-	  <script src="/static/scripts.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Passenger Dashboard</title>
+  <link rel="stylesheet" href="/static/bootstrap.min.css" />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #f8f9fa;
+    }
+
+    .content-wrapper {
+      flex: 1;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 220px;
+      background-color: #0d6efd;
+      padding: 20px;
+      color: white;
+    }
+
+    .sidebar h5 {
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    .sidebar button {
+      margin-bottom: 12px;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      background-color: #f8f9fa;
+    }
+
+    .train-card, .reservation-card {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      background-color: #fff;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .footer {
+      padding: 15px;
+      background-color: #f1f1f1;
+      text-align: center;
+      font-size: 14px;
+      color: #6c757d;
+      border-top: 1px solid #dee2e6;
+    }
+
+    .badge-seats {
+      font-size: 13px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
-<body class="bg-light">
-    <!-- 🚆 Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="/">🚆 Railway Reservation</a>
-            <a href="/passenger/logout" class="btn btn-danger">Logout</a>
-        </div>
-    </nav>
+<body>
+  <!-- 🚆 Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="/">🚆 Railway Reservation</a>
+      <a href="/passenger/logout" class="btn btn-danger">Logout</a>
+    </div>
+  </nav>
 
-    <!-- 🌟 Main Content Wrapper -->
-    <div class="main-content container mt-5">
-        <h2>Welcome, Passenger</h2>
-        <p>Book a train ticket below.</p>
-
-        <form action="/trains/search" method="get" class="row g-3">
-            <div class="col-md-5">
-                <label class="form-label">Source</label>
-                <input type="text" name="source" class="form-control" required>
-            </div>
-            <div class="col-md-5">
-                <label class="form-label">Destination</label>
-                <input type="text" name="destination" class="form-control" required>
-            </div>
-            <div class="col-md-2">
-                <label class="form-label">&nbsp;</label>
-                <button type="submit" class="btn btn-success w-100">Search</button>
-            </div>
-        </form>
-
-        <h4 class="mt-4">Available Trains</h4>
-        <div id="train-results"></div>
+  <!-- 🔁 Sidebar + Main Content -->
+  <div class="content-wrapper">
+    <!-- Sidebar -->
+    <div class="sidebar">
+		<h4 class="text-center fw-bold">Menu</h4>
+      <button class="btn btn-light w-100" onclick="showSection('booking')">Book Train</button>
+      <button class="btn btn-light w-100" onclick="showSection('reservations')">My Reservations</button>
     </div>
 
-    <!-- 📌 Footer -->
-    <footer class="footer">
-        &copy; 2025 Railway Reservation System | All Rights Reserved
-    </footer>
+    <!-- Main Section -->
+    <div class="main-content">
+      <!-- Booking Section -->
+      <div id="booking-section">
+        <h3>Welcome, Passenger</h3>
+        <p class="text-muted">Search and book trains below:</p>
 
-	
+        <form id="search-form" class="row g-3 mb-4">
+          <div class="col-md-4">
+            <input type="text" name="source" class="form-control" placeholder="Source" required />
+          </div>
+          <div class="col-md-4">
+            <input type="text" name="destination" class="form-control" placeholder="Destination" required />
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-success w-100">Search</button>
+          </div>
+        </form>
 
-    <script>
-        document.querySelector("form").addEventListener("submit", async function(event) {
-            event.preventDefault();
-            const source = document.querySelector("[name='source']").value;
-            const destination = document.querySelector("[name='destination']").value;
-            const response = await fetch(`/trains/search?source=${source}&destination=${destination}`);
-            const trains = await response.json();
-            
-            let resultHTML = "<ul class='list-group mt-3'>";
-            trains.forEach(train => {
-                resultHTML += `<li class="list-group-item">
-                    <strong>${train.trainName}</strong> - ${train.source} to ${train.destination}
-                    <span class="badge bg-secondary">${train.seatsAvailable} seats</span>
-                </li>`;
-            });
-            resultHTML += "</ul>";
-            document.getElementById("train-results").innerHTML = resultHTML;
+        <h5 class="mt-4">Available Trains</h5>
+        <div id="train-results"></div>
+      </div>
+
+      <!-- Reservations Section -->
+      <div id="reservations-section" class="hidden">
+        <h4 class="mb-4">Your Bookings</h4>
+        <div id="reservation-results"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 📌 Footer -->
+  <footer class="footer mt-auto">
+    &copy; 2025 Railway Reservation System | All Rights Reserved
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    let passengerId = null;
+
+    async function fetchPassengerId() {
+      try {
+        const res = await fetch("/passenger/session-id");
+        if (!res.ok) throw new Error("Failed to get passenger ID");
+        passengerId = await res.text();
+      } catch {
+        alert("Error: Please login again.");
+      }
+    }
+
+    fetchPassengerId();
+
+    // Show sections
+    function showSection(section) {
+      document.getElementById("booking-section").classList.add("hidden");
+      document.getElementById("reservations-section").classList.add("hidden");
+      if (section === "booking") {
+        document.getElementById("booking-section").classList.remove("hidden");
+      } else {
+        document.getElementById("reservations-section").classList.remove("hidden");
+        loadReservations();
+      }
+    }
+
+    // Train Search + Booking
+    document.getElementById("search-form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      if (!passengerId) return alert("Login again");
+
+      const source = document.querySelector("[name='source']").value;
+      const destination = document.querySelector("[name='destination']").value;
+      const response = await fetch(`/trains/search?source=${source}&destination=${destination}`);
+      const trains = await response.json();
+
+      let html = "";
+      trains.forEach(train => {
+        const formId = `book-form-${train.id}`;
+        html += `
+          <div class="train-card">
+            <h5>${train.trainName} - ${train.source} to ${train.destination}
+              <span class="badge bg-secondary badge-seats">${train.seatsAvailable} seats</span>
+            </h5>
+            <form id="${formId}" class="reservation-form row g-2 align-items-end mt-3" data-train-id="${train.id}">
+              <div class="col-md-4">
+                <label class="form-label">Travel Date</label>
+                <input type="date" name="travelDate" class="form-control" required />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Seats</label>
+                <input type="number" name="seatsBooked" class="form-control" min="1" max="${train.seatsAvailable}" required />
+              </div>
+              <div class="col-md-4">
+                <button type="submit" class="btn btn-primary w-100">Book</button>
+              </div>
+            </form>
+            <div id="message-${train.id}" class="text-success mt-2 fw-bold"></div>
+          </div>`;
+      });
+
+      document.getElementById("train-results").innerHTML = html;
+
+      document.querySelectorAll(".reservation-form").forEach(form => {
+        form.addEventListener("submit", async e => {
+          e.preventDefault();
+          const trainId = form.dataset.trainId;
+          const travelDate = form.querySelector("[name='travelDate']").value;
+          const seatsBooked = form.querySelector("[name='seatsBooked']").value;
+
+          const booking = {
+            travelDate,
+            seatsBooked: parseInt(seatsBooked),
+            train: { id: parseInt(trainId) },
+            passenger: { id: parseInt(passengerId) }
+          };
+
+          const res = await fetch("/reservations/book", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(booking)
+          });
+
+          const msg = await res.text();
+          document.getElementById(`message-${trainId}`).innerText = msg;
         });
-    </script>
+      });
+    });
+
+    // Load reservations
+    async function loadReservations() {
+      const res = await fetch(`/reservations/list/${passengerId}`);
+      const reservations = await res.json();
+
+      let html = "";
+      if (reservations.length === 0) {
+        html = `<p class="text-muted">No reservations found.</p>`;
+      } else {
+        reservations.forEach(r => {
+          html += `
+            <div class="reservation-card">
+              <h6><strong>${r.train.trainName}</strong> - ${r.train.source} to ${r.train.destination}</h6>
+              <p class="mb-1">📅 Travel Date: <strong>${r.travelDate}</strong></p>
+              <p class="mb-0">🪑 Seats Booked: <strong>${r.seatsBooked}</strong></p>
+            </div>`;
+        });
+      }
+      document.getElementById("reservation-results").innerHTML = html;
+    }
+  </script>
 </body>
 </html>
