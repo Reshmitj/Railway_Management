@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passenger Dashboard</title>
+	<!-- ✅ Fix Bootstrap and CSS Links -->
+	  <link rel="stylesheet" href="/static/bootstrap.min.css">
+	  <link rel="stylesheet" href="/static/styles.css">
+	  <script src="/static/scripts.js"></script>
+</head>
+<body class="bg-light">
+    <!-- 🚆 Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">🚆 Railway Reservation</a>
+            <a href="/passenger/logout" class="btn btn-danger">Logout</a>
+        </div>
+    </nav>
+
+    <!-- 🌟 Main Content Wrapper -->
+    <div class="main-content container mt-5">
+        <h2>Welcome, Passenger</h2>
+        <p>Book a train ticket below.</p>
+
+        <form action="/trains/search" method="get" class="row g-3">
+            <div class="col-md-5">
+                <label class="form-label">Source</label>
+                <input type="text" name="source" class="form-control" required>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label">Destination</label>
+                <input type="text" name="destination" class="form-control" required>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">&nbsp;</label>
+                <button type="submit" class="btn btn-success w-100">Search</button>
+            </div>
+        </form>
+
+        <h4 class="mt-4">Available Trains</h4>
+        <div id="train-results"></div>
+    </div>
+
+    <!-- 📌 Footer -->
+    <footer class="footer">
+        &copy; 2025 Railway Reservation System | All Rights Reserved
+    </footer>
+
+	
+
+    <script>
+        document.querySelector("form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const source = document.querySelector("[name='source']").value;
+            const destination = document.querySelector("[name='destination']").value;
+            const response = await fetch(`/trains/search?source=${source}&destination=${destination}`);
+            const trains = await response.json();
+            
+            let resultHTML = "<ul class='list-group mt-3'>";
+            trains.forEach(train => {
+                resultHTML += `<li class="list-group-item">
+                    <strong>${train.trainName}</strong> - ${train.source} to ${train.destination}
+                    <span class="badge bg-secondary">${train.seatsAvailable} seats</span>
+                </li>`;
+            });
+            resultHTML += "</ul>";
+            document.getElementById("train-results").innerHTML = resultHTML;
+        });
+    </script>
+</body>
+</html>
