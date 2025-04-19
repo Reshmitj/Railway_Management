@@ -61,3 +61,25 @@ Follow these steps to set up and run the application:
 - **Password:** `adminpass1`
 
 ---
+
+### 5. Accessing the H2 Database Console
+
+You can use the H2 Console to view and manage data.
+
+#### Open Console:
+
+- URL: `http://localhost:8080/h2-console`
+
+#### H2 UI Inputs:
+
+| Field              | Value                              |
+|--------------------|-------------------------------------|
+| **JDBC URL**       | `jdbc:h2:file:./data/railwaydb`     |
+| **Username**       | `sa`                                |
+| **Password**       | *(leave empty unless set)*          |
+| **Driver Class**   | `org.h2.Driver`                     |
+
+✅ Click **Connect** to access your tables like `passenger`, `admin`, `train`, etc.
+
+---
+
