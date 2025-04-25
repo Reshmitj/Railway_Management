@@ -1,3 +1,4 @@
+
 # Railway Ticket Management System
 
 This is a Spring Boot application that allows users to register and log in as passengers. Admin access is also available.
@@ -23,41 +24,62 @@ Follow these steps to set up and run the application:
    - Import the project as a **Maven** project
 
 3. **Run Maven Commands** (Before Running the Application)
-   - **From Terminal:**
-     - Open a terminal inside the project directory and execute the following commands:
-       ```sh
-       mvn clean
-       mvn install
-       ```
-   - **From IDE (Spring Tool Suite - STS):**
-     - Right-click on the project in the **Project Explorer**.
-     - Navigate to **Run As > Maven clean** to clean the project.
-     - Navigate to **Run As > Maven install** to install dependencies.
-     - Right-click on the project and select **Maven > Update Project** to ensure dependencies are correctly resolved.
+
+#### From Terminal:
+```sh
+mvn clean
+mvn install
+```
+
+#### From IDE (Spring Tool Suite - STS):
+- Right-click the project > **Run As > Maven clean**
+- Then, **Run As > Maven install**
+- Update Maven project if needed: **Maven > Update Project**
+
+---
 
 ### 3. Run the Application
 
-#### From Terminal
-- Navigate to the project root folder in your terminal.
-- Run the following command:
-  ```sh
-  mvn spring-boot:run
-  ```
+#### From Terminal:
+```sh
+mvn spring-boot:run
+```
 
-#### From IDE (Spring Tool Suite - STS)
-- Open the **Spring Boot Perspective** in STS.
-- Locate the **main class** of the Spring Boot application.
-- Right-click and select **Run As > Spring Boot App**.
-- The application will start on `http://localhost:8080/`.
+#### From IDE (STS):
+- Right-click the main class > **Run As > Spring Boot App**
+- App runs at: `http://localhost:8080/`
+
+---
 
 ### 4. Using the Application
 
-- Navigate to `http://localhost:8080/`
+- Open browser and go to: `http://localhost:8080/`
 - Register as a **Passenger**
-- Log in using your registered credentials
+- Login with credentials
 
-#### Admin Login Credentials
+#### Admin Login:
 - **Username:** `admin1`
 - **Password:** `adminpass1`
+
+---
+
+### 5. Accessing the H2 Database Console
+
+You can use the H2 Console to view and manage data.
+
+#### Open Console:
+
+- URL: `http://localhost:8080/h2-console`
+
+#### H2 UI Inputs:
+
+| Field              | Value                              |
+|--------------------|-------------------------------------|
+| **JDBC URL**       | `jdbc:h2:file:./data/railwaydb`     |
+| **Username**       | `sa`                                |
+| **Password**       | *(leave empty unless set)*          |
+| **Driver Class**   | `org.h2.Driver`                     |
+
+✅ Click **Connect** to access your tables like `passenger`, `admin`, `train`, etc.
 
 ---
