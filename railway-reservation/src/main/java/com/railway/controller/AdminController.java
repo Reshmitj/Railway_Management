@@ -3,7 +3,6 @@ package com.railway.controller;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -64,13 +63,21 @@ public class AdminController {
         return "redirect:/admin/dashboard.html";
     }
 
-    // 🛤️ Add or Update Train
+    // 🛤️ Add or Update Train (Prevent Duplicate Train Numbers)
     @PostMapping("/addTrain")
     public String addOrUpdateTrain(@ModelAttribute Train train, HttpSession session) {
+        Optional<Train> existingTrain = trainService.getTrainByNumber(train.getTrainNumber());
+
+        if (train.getId() == null && existingTrain.isPresent()) {
+            session.setAttribute("trainMessage", "⚠️ Train number already exists: " + train.getTrainNumber());
+            return "redirect:/admin/dashboard.html";
+        }
+
         String message = trainService.addOrUpdateTrain(train);
         session.setAttribute("trainMessage", message);
         return "redirect:/admin/dashboard.html";
     }
+
 
     // ✏️ Update Train (AJAX)
     @PutMapping("/updateTrain")
@@ -92,30 +99,21 @@ public class AdminController {
         return ResponseEntity.ok("Deleted");
     }
 
+    // ➕ Add Route (Prevent Duplicate Route for Same Train)
     @PostMapping("/addRoute")
     public String addRoute(@RequestParam int trainNumber,
                            @RequestParam String source,
                            @RequestParam String destination,
-                           @RequestParam(required = false) String stops,
-                           HttpSession session) {
-        System.out.println("Received Add Route Request:");
-        System.out.println("Train Number: " + trainNumber);
-        System.out.println("Source: " + source);
-        System.out.println("Destination: " + destination);
-        System.out.println("Stops Raw: " + stops);
+                           @RequestParam(required = false) String stops) {
 
         Optional<Train> trainOpt = trainService.getTrainByNumber(trainNumber);
-
         if (trainOpt.isEmpty()) {
-            session.setAttribute("routeMessage", "❌ Train not found for number: " + trainNumber);
-            return "redirect:/admin/dashboard.html";
+            return "redirect:/admin/dashboard.html?routeMsg=Train+not+found+for+number+" + trainNumber;
         }
 
         Train train = trainOpt.get();
-
         if (routeService.isDuplicateForTrain(train.getId())) {
-            session.setAttribute("routeMessage", "⚠️ Route already exists for train: " + trainNumber);
-            return "redirect:/admin/dashboard.html";
+            return "redirect:/admin/dashboard.html?routeMsg=Route+already+exists+for+train+" + trainNumber;
         }
 
         Route route = new Route();
@@ -131,18 +129,24 @@ public class AdminController {
         }
 
         routeService.saveRoute(route);
-        session.setAttribute("routeMessage", "✅ Route added successfully for train: " + trainNumber);
-        return "redirect:/admin/dashboard.html";
+        return "redirect:/admin/dashboard.html?routeMsg=Route+added+successfully+for+train+" + trainNumber;
+    }
+    
+    @GetMapping("/routes")
+    @ResponseBody
+    public List<Route> getAllRoutes() {
+        return routeService.getAllRoutes();
     }
 
 
 
-
-
-    // Logout
+    // 🔒 Logout
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/admin/login.html";
     }
+    
+   
+
 }

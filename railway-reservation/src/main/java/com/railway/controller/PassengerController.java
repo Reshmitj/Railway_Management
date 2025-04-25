@@ -3,10 +3,16 @@ package com.railway.controller;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.railway.model.Passenger;
 import com.railway.service.PassengerService;
@@ -50,10 +56,15 @@ public class PassengerController {
     // Handle registration
     @PostMapping("/register")
     public String register(@ModelAttribute Passenger passenger) {
-        passengerService.registerPassenger(passenger);
-        System.out.println("✅ Registered passenger: " + passenger.getEmail());
-        return "redirect:/passenger/login.html";
+        try {
+            passengerService.registerPassenger(passenger);
+            return "redirect:/passenger/login.html";
+        } catch (DataIntegrityViolationException e) {
+            System.out.println("❌ Email already registered: " + passenger.getEmail());
+            return "redirect:/passenger/register.html?error=duplicate";
+        }
     }
+
 
     // Logout
     @GetMapping("/logout")

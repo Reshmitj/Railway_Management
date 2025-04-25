@@ -1,45 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-	<!-- ✅ Fix Bootstrap and CSS Links -->
-	  <link rel="stylesheet" href="/static/bootstrap.min.css">
-	  <link rel="stylesheet" href="/static/styles.css">
-	  <script src="/static/scripts.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register</title>
+  <!-- ✅ Bootstrap and Custom CSS -->
+  <link rel="stylesheet" href="/static/bootstrap.min.css" />
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script src="/static/scripts.js"></script>
 </head>
 <body class="bg-light">
-	<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-	    <div class="container">
-	        <a class="navbar-brand fw-bold" href="/">🚆 Railway Reservation</a>
-			<a href="/" class="btn btn-outline-light">Home</a>
-	    </div>
-	</nav>
-    <div class="container d-flex align-items-center justify-content-center vh-100">
-        <div class="card shadow-lg p-4 w-50">
-            <h2 class="text-center mb-4">Register</h2>
-            <form action="/passenger/register" method="post">
-                <div class="mb-3">
-                    <label class="form-label">Full Name</label>
-                    <input type="text" class="form-control" name="name" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-control" name="password" required>
-                </div>
-                <button type="submit" class="btn btn-success w-100">Register</button>
-                <p class="text-center mt-3"><a href="/passenger/login">Already have an account? Login</a></p>
-            </form>
-        </div>
+  <!-- ✅ Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="/">🚆 Railway Reservation</a>
+      <a href="/" class="btn btn-outline-light">Home</a>
     </div>
-	<!-- 📌 Footer -->
-	<footer class="footer">
-	    &copy; 2025 Railway Reservation System | All Rights Reserved
-	</footer>
+  </nav>
+
+  <!-- ✅ Registration Form -->
+  <div class="container d-flex align-items-center justify-content-center vh-100">
+    <div class="card shadow-lg p-4 w-50">
+      <h2 class="text-center mb-4">Register</h2>
+
+      <!-- ✅ Dynamic Error Message Area -->
+      <div id="errorMessage" class="alert alert-danger text-center d-none"></div>
+
+      <form action="/passenger/register" method="post">
+        <div class="mb-3">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-control" name="name" required />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" name="email" required />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" name="password" required />
+        </div>
+        <button type="submit" class="btn btn-success w-100">Register</button>
+        <p class="text-center mt-3">
+          <a href="/passenger/login">Already have an account? Login</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- 📌 Footer -->
+  <footer class="footer text-center mt-5">
+    &copy; 2025 Railway Reservation System | All Rights Reserved
+  </footer>
+
+  <!-- ✅ JS to Show Error from Query Param -->
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get("error");
+
+    if (error === "duplicate") {
+      const errorDiv = document.getElementById("errorMessage");
+      errorDiv.classList.remove("d-none");
+      errorDiv.textContent = "❌ This email is already registered.";
+    }
+  </script>
 </body>
 </html>

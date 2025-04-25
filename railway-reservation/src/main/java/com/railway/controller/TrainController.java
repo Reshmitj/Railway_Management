@@ -23,9 +23,17 @@ public class TrainController {
     private TrainService trainService;
 
     @GetMapping("/search")
-    public List<Train> searchTrains(@RequestParam String source, @RequestParam String destination) {
-        return trainService.searchTrains(source, destination);
+    public ResponseEntity<?> searchTrains(@RequestParam String source, @RequestParam String destination) {
+        List<Train> trains = trainService.searchTrains(source, destination);
+
+        if (trains.isEmpty()) {
+            String message = String.format("❌ No trains found from %s to %s", source, destination);
+            return ResponseEntity.status(404).body(message);
+        }
+
+        return ResponseEntity.ok(trains);
     }
+
     
     @GetMapping("")
     public List<Train> getAllTrains() {

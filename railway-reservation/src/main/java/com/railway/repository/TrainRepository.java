@@ -12,4 +12,5 @@ import com.railway.model.Train;
 public interface TrainRepository extends JpaRepository<Train, Long> {
     List<Train> findBySourceAndDestination(String source, String destination); 
     Optional<Train> findByTrainNumber(int trainNumber);
+    
 }

@@ -85,7 +85,7 @@
   <div class="content-wrapper">
     <!-- Sidebar -->
     <div class="sidebar">
-		<h4 class="text-center fw-bold">Menu</h4>
+      <h4 class="text-center fw-bold">Menu</h4>
       <button class="btn btn-light w-100" onclick="showSection('booking')">Book Train</button>
       <button class="btn btn-light w-100" onclick="showSection('reservations')">My Reservations</button>
     </div>
@@ -142,7 +142,6 @@
 
     fetchPassengerId();
 
-    // Show sections
     function showSection(section) {
       document.getElementById("booking-section").classList.add("hidden");
       document.getElementById("reservations-section").classList.add("hidden");
@@ -154,7 +153,7 @@
       }
     }
 
-    // Train Search + Booking
+    // 🔍 Search & Display Trains
     document.getElementById("search-form").addEventListener("submit", async function (e) {
       e.preventDefault();
       if (!passengerId) return alert("Login again");
@@ -162,32 +161,37 @@
       const source = document.querySelector("[name='source']").value;
       const destination = document.querySelector("[name='destination']").value;
       const response = await fetch(`/trains/search?source=${source}&destination=${destination}`);
-      const trains = await response.json();
 
       let html = "";
-      trains.forEach(train => {
-        const formId = `book-form-${train.id}`;
-        html += `
-          <div class="train-card">
-            <h5>${train.trainName} - ${train.source} to ${train.destination}
-              <span class="badge bg-secondary badge-seats">${train.seatsAvailable} seats</span>
-            </h5>
-            <form id="${formId}" class="reservation-form row g-2 align-items-end mt-3" data-train-id="${train.id}">
-              <div class="col-md-4">
-                <label class="form-label">Travel Date</label>
-                <input type="date" name="travelDate" class="form-control" required />
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Seats</label>
-                <input type="number" name="seatsBooked" class="form-control" min="1" max="${train.seatsAvailable}" required />
-              </div>
-              <div class="col-md-4">
-                <button type="submit" class="btn btn-primary w-100">Book</button>
-              </div>
-            </form>
-            <div id="message-${train.id}" class="text-success mt-2 fw-bold"></div>
-          </div>`;
-      });
+      if (!response.ok) {
+        const msg = await response.text();
+        html = `<div class="alert alert-warning">${msg}</div>`;
+      } else {
+        const trains = await response.json();
+        trains.forEach(train => {
+          const formId = `book-form-${train.id}`;
+          html += `
+            <div class="train-card">
+              <h5>${train.trainName} - ${train.source} to ${train.destination}
+                <span class="badge bg-secondary badge-seats">${train.seatsAvailable} seats</span>
+              </h5>
+              <form id="${formId}" class="reservation-form row g-2 align-items-end mt-3" data-train-id="${train.id}">
+                <div class="col-md-4">
+                  <label class="form-label">Travel Date</label>
+                  <input type="date" name="travelDate" class="form-control" required />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Seats</label>
+                  <input type="number" name="seatsBooked" class="form-control" min="1" max="${train.seatsAvailable}" required />
+                </div>
+                <div class="col-md-4">
+                  <button type="submit" class="btn btn-primary w-100">Book</button>
+                </div>
+              </form>
+              <div id="message-${train.id}" class="text-success mt-2 fw-bold"></div>
+            </div>`;
+        });
+      }
 
       document.getElementById("train-results").innerHTML = html;
 
@@ -217,7 +221,7 @@
       });
     });
 
-    // Load reservations
+    // 🧾 Load Reservations
     async function loadReservations() {
       const res = await fetch(`/reservations/list/${passengerId}`);
       const reservations = await res.json();
